@@ -11,12 +11,6 @@ public class InteractableReticle : MonoBehaviour
     private Interactable currentObject;
     private float startTime;
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
     // Update is called once per frame
     void Update()
     {
