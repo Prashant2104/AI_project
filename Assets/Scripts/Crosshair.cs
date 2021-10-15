@@ -10,6 +10,8 @@ public class Crosshair : MonoBehaviour
     public GameObject CrossHair;
     public Transform ShootPoint;
 
+    public float Range;
+
     public Transform Gun;
     public Transform cam;
 
@@ -36,20 +38,23 @@ public class Crosshair : MonoBehaviour
         {
             Shoot();
         }
-        if (Input.GetKeyDown(KeyCode.R))
+        /*if (Input.GetKeyDown(KeyCode.R))
         {
-            Reload();
-        }
+            StartCoroutine(Reload());
+        }*/
 
         Cross.fillAmount = (float)(BulletsLeft / pool.AmountToPool);
     }
 
     void RotateGun()
     {
-        if (Physics.Raycast(cam.position, cam.forward, out RaycastHit hitInfo))
+        if (Physics.Raycast(cam.position, cam.forward, out RaycastHit hitInfo, Range))
         {
-            Vector3 direction = hitInfo.point - Gun.position;
-            Gun.rotation = Quaternion.LookRotation(direction);
+            if (hitInfo.transform.CompareTag("Zombie"))
+            {
+                Vector3 direction = hitInfo.point - Gun.position;
+                Gun.rotation = Quaternion.LookRotation(direction);
+            }
         }
     }
 
@@ -60,23 +65,18 @@ public class Crosshair : MonoBehaviour
         {
             BulletsLeft--;
         }
-
-        Debug.Log("F = " + Cross.fillAmount);
-        Debug.Log("B = " + BulletsLeft);
     }
-
-    void Reload()
+    /*IEnumerator Reload()
     {
+        //audioManager.Reloading();
+        yield return new WaitForSeconds(0.65f);
         BulletsLeft = pool.AmountToPool;
-
-        Debug.Log("F = " + Cross.fillAmount);
-        Debug.Log("B = " + BulletsLeft);
-    }
+    }*/
 
     void RayCasting()
     {
         Ray ray = new Ray(ShootPoint.position, ShootPoint.forward);
-        if (Physics.Raycast(ray, out RaycastHit hit))
+        if (Physics.Raycast(ray, out RaycastHit hit, Range))
         {
             var Target = hit.transform;
             if (Target.CompareTag("Zombie"))
@@ -96,6 +96,6 @@ public class Crosshair : MonoBehaviour
             }
         }
 
-        Debug.DrawRay(ShootPoint.position, ShootPoint.forward * 100f, Color.red);
+        Debug.DrawRay(ShootPoint.position, ShootPoint.forward * Range, Color.green);
     }
 }

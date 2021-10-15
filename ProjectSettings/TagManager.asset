@@ -8,6 +8,9 @@ TagManager:
   - Zombie
   - Ground
   - Target
+  - Bulb
+  - Gun1
+  - Gun2
   layers:
   - Default
   - TransparentFX

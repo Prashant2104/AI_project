@@ -6,7 +6,7 @@ using UnityEngine.UI;
 public class InteractableReticle : MonoBehaviour
 {
     public Image Reticle;
-    public Transform Gun;
+    public Transform Cam;
 
     private Interactable currentObject;
     private float startTime;
@@ -14,7 +14,7 @@ public class InteractableReticle : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        Ray ray = new Ray(Gun.position, Gun.forward);
+        Ray ray = new Ray(Cam.position, Cam.forward);
         if (Physics.Raycast(ray, out RaycastHit hit))
         {
             Interactable i = hit.collider.GetComponent<Interactable>();
@@ -28,7 +28,7 @@ public class InteractableReticle : MonoBehaviour
             {
                 if(Time.time - startTime > 1)
                 {
-                    currentObject.Interact(Gun.gameObject);
+                    currentObject.Interact(Cam.gameObject);
                     startTime = 0;
                     currentObject = null;
                 }
