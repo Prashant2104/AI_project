@@ -6,6 +6,7 @@ public class GunFlashlight : MonoBehaviour
 {
     public GameObject FlashLight;
     public bool IsLightOn;
+    public AudioManager audioManager;
 
     // Start is called before the first frame update
     void Start()
@@ -28,7 +29,7 @@ public class GunFlashlight : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.F))
         {
             IsLightOn = !IsLightOn;
-            //audioManager.Interacted();
+            audioManager.Interacted();
         }
     }
 }

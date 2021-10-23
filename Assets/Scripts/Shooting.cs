@@ -5,22 +5,19 @@ using UnityEngine.UI;
 
 public class Shooting : MonoBehaviour
 {
-    public GameObject ReloadText;
+    public GunMuzzleFlash muzzleFlash;
 
-    private void Start()
-    {
-        ReloadText.SetActive(false);
-    }
+    public AudioManager audioManager;
+
     private void Update()
     {
         if(Input.GetKeyDown(KeyCode.Mouse0))
         {
             Shoot();
         }
-
-        if (Input.GetKeyDown(KeyCode.R))
+        if (Input.GetKeyUp(KeyCode.Mouse0))
         {
-            Reload();
+            muzzleFlash.StopFiring();
         }
     }
 
@@ -32,17 +29,8 @@ public class Shooting : MonoBehaviour
             Bullet.transform.position = transform.position;
             Bullet.transform.rotation = transform.rotation;
             Bullet.SetActive(true);
-            ReloadText.SetActive(false);
+            muzzleFlash.StartFiring();
+            audioManager.Shooting_Gun1();
         }
-
-        if (Bullet == null)
-        {
-            ReloadText.SetActive(true);
-        }
-    }
-
-    public void Reload()
-    {
-        ReloadText.SetActive(false);
     }
 }

@@ -7,16 +7,18 @@ public class TargetController : MonoBehaviour
     //public Vector3 InitialPos, CurrentPos;
     //public float speed;
 
-    public float health;
+    public float Health;
     private GameManager GM;
 
     void Start()
     {
         GM = FindObjectOfType<GameManager>();
-        //InitialPos = gameObject.transform.position;
-        //CurrentPos = gameObject.transform.position;
-    }
 
+        if (gameObject.CompareTag("Zombie"))
+        {
+            Health = Random.Range(2, 9);
+        }
+    }
     /*void FixedUpdate()
     {
         transform.Translate(speed, 0, 0);
@@ -34,8 +36,8 @@ public class TargetController : MonoBehaviour
 
     public void TakeDamage(float damage)
     {
-        health -= damage;
-        if(health <= 0)
+        Health -= damage;
+        if(Health <= 0)
         {
             /*if(gameObject.CompareTag("Zombie"))
             {

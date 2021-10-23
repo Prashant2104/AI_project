@@ -17,30 +17,29 @@ public class Gun : MonoBehaviour
     public float DamageAmount;
     float BulletsLeft;
 
-    public GameObject ReloadText;
+    public Text ReloadText;
 
     public bool ScopeIn;
 
     private GameManager GM;
     public GunMuzzleFlash muzzleFlash;
-    //private AudioManager audioManager;
+    public AudioManager audioManager;
+
     void Start()
     {
         GM = FindObjectOfType<GameManager>();
-        //audioManager = FindObjectOfType<AudioManager>();
         ScopeIn = false;
         Reticle.color = new Color(255, 255, 255, 255);
         Cross.color = new Color(0, 0, 255, 200);
         BulletsLeft = Bullets;
-        ReloadText.SetActive(false);
+        ReloadText.enabled = false;
     }
 
     void Update()
     {
-
         if (Input.GetKeyDown(KeyCode.Mouse0) && BulletsLeft > 0)
         {
-            //audioManager.Shooting();
+            audioManager.Shooting_Gun2();
             BulletsLeft--;
             muzzleFlash.StartFiring();
 
@@ -89,7 +88,7 @@ public class Gun : MonoBehaviour
         Cross.fillAmount = (float)(BulletsLeft / Bullets);
         if(BulletsLeft == 0)
         {
-            ReloadText.SetActive(true);
+            ReloadText.enabled = true;
         }
     }
 
@@ -106,7 +105,7 @@ public class Gun : MonoBehaviour
                 target.TakeDamage(DamageAmount);
                 if(target.gameObject.CompareTag("Bulb"))
                 {
-                    //audioManager.BulbShatter();
+                    audioManager.BulbShatter();
                 }
             }
         }
@@ -125,7 +124,7 @@ public class Gun : MonoBehaviour
                     target.TakeDamage(DamageAmount); 
                     if (target.gameObject.CompareTag("Bulb"))
                     {
-                        //audioManager.BulbShatter();
+                        audioManager.BulbShatter();
                     }
                 }
             }
@@ -133,15 +132,15 @@ public class Gun : MonoBehaviour
     }   
     IEnumerator Reload()
     {
-        //audioManager.Reloading();
+        audioManager.Reloading();
         yield return new WaitForSeconds(0.65f);
         BulletsLeft = Bullets;
-        ReloadText.SetActive(false);
+        ReloadText.enabled = false;
     }
     void RayCasting()
     {
         //Debug.DrawRay(Cam.transform.position, Cam.transform.forward * Range, Color.red);
-        Debug.DrawRay(GunCam.transform.position, GunCam.transform.forward * ScopeRange, Color.green);
+        //Debug.DrawRay(GunCam.transform.position, GunCam.transform.forward * ScopeRange, Color.green);
         if (Physics.Raycast(Cam.transform.position, Cam.transform.forward, out RaycastHit hit, Range) && ScopeIn == false)
         {
             TargetController target = hit.transform.GetComponent<TargetController>();
@@ -160,7 +159,7 @@ public class Gun : MonoBehaviour
 
     /*void RotateGun()
     {
-        //Vector3 direction = hitInfo.point - Gun.position;
-        //Gun.rotation = Quaternion.LookRotation(direction);
+        Vector3 direction = hitInfo.point - Gun.position;
+        Gun.rotation = Quaternion.LookRotation(direction);
     }*/
 }

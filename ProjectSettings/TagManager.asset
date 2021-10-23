@@ -11,6 +11,8 @@ TagManager:
   - Bulb
   - Gun1
   - Gun2
+  - Door
+  - Book
   layers:
   - Default
   - TransparentFX

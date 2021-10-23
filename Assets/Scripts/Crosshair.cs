@@ -9,23 +9,28 @@ public class Crosshair : MonoBehaviour
     public Image Reticle;
     public GameObject CrossHair;
     public Transform ShootPoint;
+    public int ReloadAllowed;
 
     public float Range;
 
     public Transform Gun;
     public Transform cam;
 
-    float BulletsLeft;
+    public Text ReloadText;
+    public float BulletsLeft;
 
+    private int ReloadDone;
+    public AudioManager audioManager;
     private BulletPool pool;
 
     void Start()
     {
         pool = FindObjectOfType<BulletPool>();
-
+        ReloadDone = 0;
         Reticle.color = new Color(255, 255, 255, 255);
         Cross.color = new Color(0, 0, 255, 200);
         BulletsLeft = pool.AmountToPool;
+        ReloadText.enabled = false;
     }
 
     void Update()
@@ -36,12 +41,21 @@ public class Crosshair : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.Mouse0))
         {
-            Shoot();
+            if(BulletsLeft > 0)
+            {
+                BulletsLeft--;
+            }
         }
-        /*if (Input.GetKeyDown(KeyCode.R))
+        if (Input.GetKeyDown(KeyCode.R))
         {
-            StartCoroutine(Reload());
-        }*/
+            ReloadDone++;
+            if(ReloadDone < ReloadAllowed)
+                StartCoroutine(Reload());
+        }
+        if(BulletsLeft < 1)
+        {
+            ReloadText.enabled = true;
+        }
 
         Cross.fillAmount = (float)(BulletsLeft / pool.AmountToPool);
     }
@@ -50,7 +64,8 @@ public class Crosshair : MonoBehaviour
     {
         if (Physics.Raycast(cam.position, cam.forward, out RaycastHit hitInfo, Range))
         {
-            if (hitInfo.transform.CompareTag("Zombie"))
+            //Debug.Log("Gun: "+hitInfo.transform.name);
+            if (hitInfo.transform.CompareTag("Zombie") || hitInfo.transform.CompareTag("Bulb"))
             {
                 Vector3 direction = hitInfo.point - Gun.position;
                 Gun.rotation = Quaternion.LookRotation(direction);
@@ -58,20 +73,23 @@ public class Crosshair : MonoBehaviour
         }
     }
 
-    void Shoot()
+    /*void Shoot()
     {
         GameObject Bullet = BulletPool.SharedInstance.GetPooledObjects();
+        
         if (Bullet != null)
         {
             BulletsLeft--;
         }
-    }
-    /*IEnumerator Reload()
-    {
-        //audioManager.Reloading();
-        yield return new WaitForSeconds(0.65f);
-        BulletsLeft = pool.AmountToPool;
     }*/
+    IEnumerator Reload()
+    {
+        yield return new WaitForSeconds(0.5f);
+        audioManager.Reloading();
+        yield return new WaitForSeconds(1.5f);
+        BulletsLeft = pool.AmountToPool;
+        ReloadText.enabled = false;
+    }
 
     void RayCasting()
     {
@@ -79,7 +97,7 @@ public class Crosshair : MonoBehaviour
         if (Physics.Raycast(ray, out RaycastHit hit, Range))
         {
             var Target = hit.transform;
-            if (Target.CompareTag("Zombie"))
+            if (Target.CompareTag("Zombie") || Target.CompareTag("Bulb"))
             {
                 Reticle.color = new Color(255, 0, 0, 255);
                 Cross.color = new Color(255, 0, 0, 200);
@@ -95,7 +113,6 @@ public class Crosshair : MonoBehaviour
                 Cross.color = new Color(0, 0, 255, 200);
             }
         }
-
-        Debug.DrawRay(ShootPoint.position, ShootPoint.forward * Range, Color.green);
+        //Debug.DrawRay(ShootPoint.position, ShootPoint.forward * Range, Color.green);
     }
 }

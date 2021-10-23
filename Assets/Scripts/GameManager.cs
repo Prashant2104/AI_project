@@ -18,10 +18,20 @@ public class GameManager : MonoBehaviour
     public GameObject PlayerGun_1;
     public GameObject PlayerGun_2;
 
+    public GameObject BookPanel;
+
     public GameObject Flashlight;
     public bool IsFlashOn;
 
-    public bool Puzzle1, Puzzle2, Puzzle3;
+    public Text ReloadText;
+
+    public bool IsPaused;
+    public bool instruction;
+    public bool IsSoundOn;
+    public GameObject PausePanel;
+    public GameObject InstructionsPanel;
+    public GameObject AudioCam;
+    public CharacterController PlayerCtrl;
 
     void Start()
     {
@@ -29,12 +39,14 @@ public class GameManager : MonoBehaviour
         PlayerGun_1.SetActive(false);
         PlayerGun_2.SetActive(false);
         PoolAim.SetActive(false);
+        BookPanel.SetActive(false);
+        PausePanel.SetActive(false);
+        ReloadText.enabled = false;
 
         IsFlashOn = true;
-        Puzzle1 = false;
-        Puzzle2 = false;
-        Puzzle3 = false;
-
+        IsPaused = false;
+        instruction = false;
+        IsSoundOn = true;
     }
 
     void Update()
@@ -47,6 +59,33 @@ public class GameManager : MonoBehaviour
                 Flashlight.transform.GetChild(0).gameObject.SetActive(IsFlashOn);
             }
         }
+
+        if (Input.GetKeyDown(KeyCode.Escape) && BookPanel.activeInHierarchy == false)
+        {
+            InstructionsPanel.SetActive(false);
+            IsPaused = !IsPaused;
+            PausePanel.SetActive(IsPaused);
+        }
+        if (IsPaused)
+        {
+            PlayerCtrl.enabled = false;
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+        }
+        else
+        {
+            PlayerCtrl.enabled = true;
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false; ;
+        }
+
+        if (IsPaused == false)
+        {
+            if (Input.GetKeyDown(KeyCode.Escape) && BookPanel.activeInHierarchy == true)
+            {
+                BookPanel.SetActive(false);
+            }
+        }        
 
         if (GunCollected_1)
         {
@@ -68,5 +107,29 @@ public class GameManager : MonoBehaviour
             PlayerGun_1.SetActive(false);
             PoolAim.SetActive(false);
         }
+    }
+    public void OnResetButtonClick()
+    {
+        SceneManager.LoadScene(0);
+    }
+    public void OnExitButtonClick()
+    {
+        Application.Quit();
+    }
+    public void ToggleSFXButton()
+    {
+        IsSoundOn = !IsSoundOn;
+        AudioCam.GetComponent<AudioListener>().enabled = IsSoundOn;
+    }
+    public void PauseButton()
+    {
+        instruction = false;
+        IsPaused = false;
+        PausePanel.SetActive(false);
+    }
+    public void InstructionsButton()
+    {
+        instruction = !instruction;
+        InstructionsPanel.SetActive(instruction);
     }
 }
